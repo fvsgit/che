@@ -1,0 +1,30 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: che-certificate-issuer
+spec:
+  acme:
+    solvers:
+    - dns01:
+        azuredns:
+          # Service principal clientId (It's the value printed in the previous lines: echo ID=$AZURE_CERT_MANAGER_SP_APP_ID )
+          clientID: 482927ab-daf5-4954-9e07-d497bfa991e6
+          # A secretKeyRef to a service principal ClientSecret (password)
+          # ref: https://docs.microsoft.com/en-us/azure/container-service/kubernetes/container-service-kubernetes-service-principal
+          clientSecretSecretRef:
+            name: azuredns-config
+            # CLIENT_SECRET is the value of AZURE_CERT_MANAGER_SP_PASSWORD
+            key: XnM~6414lYy8dJM7Txi5DNg4YaVunVpWHa
+          # Azure subscription Id that can be obtained with command:
+          # $ az account show  | jq -r '.id'
+          subscriptionID: 915d1155-a8ae-4dee-857a-ca556da38db2
+          # Azure AD tenant Id that can be obtained with command:
+          # $ az account show  | jq -r '.tenantId'
+          tenantID: e00ddcdf-1e0f-4be5-a37a-894a4731986a
+          resourceGroupName: ccfc-dev-spaces
+          # The DNS Zone to use
+          hostedZoneName: corpsys.dev.ams.azu.dbgcloud.io
+    email: francois.van.staden@deutsche-boerse.com
+    privateKeySecretRef:
+      name: letsencrypt
+    server: https://acme-v02.api.letsencrypt.org/directory
